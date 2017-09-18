@@ -1,5 +1,6 @@
 package com.canvas.krish.pokemanager.data.source
 
+import com.canvas.krish.pokemanager.data.models.Pokemon
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 
 /**
@@ -7,8 +8,8 @@ import com.canvas.krish.pokemanager.data.models.PokemonListResult
  */
 interface PokemonRepository {
 
-    fun getPokemon(offset: Int, limit: Int, callback: (List<PokemonListResult>) -> Unit, onError: (t: Throwable?) -> Unit)
+    fun getPokemonList(offset: Int, limit: Int, onSuccess: (List<PokemonListResult>) -> Unit, onError: (t: Throwable?) -> Unit)
 
-
+    fun getPokemon(id: Int, onSuccess: (Pokemon) -> Unit, onError: (t: Throwable?) -> Unit)
 
 }

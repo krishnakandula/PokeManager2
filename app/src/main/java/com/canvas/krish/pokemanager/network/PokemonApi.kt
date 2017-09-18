@@ -1,6 +1,6 @@
 package com.canvas.krish.pokemanager.network
 
-import com.canvas.krish.pokemanager.data.models.PokemonListResult
+import com.canvas.krish.pokemanager.data.models.Pokemon
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -11,5 +11,5 @@ import retrofit2.http.Path
 interface PokemonApi {
 
     @GET("/api/v2/pokemon/{id}")
-    fun getPokemon(@Path("id") id: Int): Call<PokemonListResult>
+    fun getPokemon(@Path("id") id: Int): Call<Pokemon>
 }
