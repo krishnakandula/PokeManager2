@@ -1,5 +1,6 @@
 package com.canvas.krish.pokemanager.data.source
 
+import android.content.Context
 import com.canvas.krish.pokemanager.network.NetworkModule
 import com.canvas.krish.pokemanager.network.PokemonApi
 import com.canvas.krish.pokemanager.scopes.ApplicationScoped
@@ -14,5 +15,5 @@ class PokemonRepositoryModule {
 
     @Provides
     @ApplicationScoped
-    fun providePokemonRepository(pokemonApi: PokemonApi): PokemonRepository = CachingPokemonRepository(pokemonApi)
+    fun providePokemonRepository(pokemonApi: PokemonApi, context: Context): PokemonRepository = CachingPokemonRepository(pokemonApi, context)
 }
