@@ -4,6 +4,8 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'kotlin-kapt'
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.1"
@@ -26,6 +28,7 @@ android {
 ext {
     daggerVersion = '2.11'
     supportLibraryVersion = '26.1.0'
+    retrofitVersion = '2.3.0'
 }
 
 dependencies {
@@ -38,6 +41,9 @@ dependencies {
     })
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
+    //Kotlin Runtime Reflection
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
     //Support Library
     compile "com.android.support:appcompat-v7:${supportLibraryVersion}"
     compile "com.android.support:design:${supportLibraryVersion}"
@@ -47,19 +53,26 @@ dependencies {
 
     //Butterknife
     compile 'com.jakewharton:butterknife:8.8.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    kapt 'com.jakewharton:butterknife-compiler:8.8.1'
 
     //Retrofit
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
 
     //Picasso
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     //Dagger 2
-    compile "com.google.dagger:dagger:${daggerVersion}"
-    annotationProcessor "com.google.dagger:dagger-compiler:${daggerVersion}"
+    compile "com.google.dagger:dagger:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
-    compile "com.google.dagger:dagger-android:${daggerVersion}"
-    compile "com.google.dagger:dagger-android-support:${daggerVersion}"
-    annotationProcessor "com.google.dagger:dagger-android-processor:${daggerVersion}"
+    compile "com.google.dagger:dagger-android:$daggerVersion"
+    compile "com.google.dagger:dagger-android-support:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    //Material Drawer
+    compile('com.mikepenz:materialdrawer:5.9.5@aar') {
+        transitive = true
+    }
 }

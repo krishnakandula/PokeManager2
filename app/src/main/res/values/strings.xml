@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PokeManager</string>
+
+    <!--> Drawer Item Values-->
+    <string name="drawer_item_pokedex">Pokedex</string>
+    <string name="drawer_item_teams">My Teams</string>
+    <string name="drawer_item_favorites">Favorites</string>
+
 </resources>
