@@ -3,4 +3,6 @@
     <dimen name="navListWidth">200dp</dimen>
     <dimen name="minPokemonItemViewHeight">96dp</dimen>
     <dimen name="minPokemonImageViewDiameter">96dp</dimen>
+
+    <dimen name="defaultItemViewMargin">4dp</dimen>
 </resources>

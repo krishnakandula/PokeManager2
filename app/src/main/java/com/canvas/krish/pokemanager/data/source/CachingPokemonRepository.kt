@@ -48,7 +48,7 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                             val id: Int = jsonObject.getInt("_id")
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
                                     id,
-                                    jsonObject.getString("_name"),
+                                    jsonObject.getString("_name").capitalize(),
                                     jsonObject.getString("_front_default_sprite_uri"),
                                     jsonObject.getString("_description"),
                                     generatePokemonImageUrl(id))

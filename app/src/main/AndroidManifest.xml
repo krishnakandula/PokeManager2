@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.pokemonlist.PokemonListActivity"
-            android:theme="@style/MaterialDrawerTheme.Light.TranslucentStatus">
+            android:theme="@style/MaterialDrawerTheme.Light">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
