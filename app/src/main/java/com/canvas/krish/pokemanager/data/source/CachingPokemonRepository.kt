@@ -9,6 +9,8 @@ import com.canvas.krish.pokemanager.app.Constants
 import com.canvas.krish.pokemanager.data.models.Pokemon
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.network.PokemonApi
+import com.google.common.cache.Cache
+import com.google.common.cache.CacheBuilder
 import io.reactivex.Single
 import org.json.JSONArray
 import org.json.JSONException
@@ -25,7 +27,8 @@ import java.util.*
  */
 class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                                private val context: Context,
-                               private val amazonS3: AmazonS3) : PokemonRepository {
+                               private val amazonS3: AmazonS3,
+                               private val cachedImageUrls: Cache<Int, String>) : PokemonRepository {
 
     companion object {
         private val INITIAL_DATA_PATH: String = "initial_data.json"
@@ -98,18 +101,22 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
     }
 
     private fun generatePokemonImageUrl(id: Int): String {
-        val expirationDate: Date = Date()
-        val msec: Long = expirationDate.time + (1000 * 60 * 60)     //1 hour
-        expirationDate.time = msec
+        var cachedUrl: String? = cachedImageUrls.getIfPresent(id)
+        if(cachedUrl == null) {
+            val expirationDate: Date = Date()
+            val msec: Long = expirationDate.time + (1000 * 60 * 60)     //1 hour
+            expirationDate.time = msec
 
-        val presignedUrlRequest: GeneratePresignedUrlRequest = GeneratePresignedUrlRequest(
-                Constants.BUCKET_NAME,
-                "$id.png")
-                .withMethod(HttpMethod.GET)
-                .withExpiration(expirationDate)
+            val presignedUrlRequest: GeneratePresignedUrlRequest = GeneratePresignedUrlRequest(
+                    Constants.BUCKET_NAME,
+                    "$id.png")
+                    .withMethod(HttpMethod.GET)
+                    .withExpiration(expirationDate)
 
-        val url: String = amazonS3.generatePresignedUrl(presignedUrlRequest).toString()
-        Log.d(LOG_TAG, url)
-        return url
+            cachedUrl = amazonS3.generatePresignedUrl(presignedUrlRequest).toString()
+            cachedImageUrls.put(id, cachedUrl)
+        }
+
+        return cachedUrl
     }
 }
