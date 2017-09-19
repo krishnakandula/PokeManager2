@@ -7,13 +7,12 @@ import android.app.Application
  */
 class PokeManagerApplication : Application() {
 
-    val component: PokeManagerAppComponent by lazy {
-        DaggerPokeManagerAppComponent.builder()
-                .pokeManagerAppModule(PokeManagerAppModule(this))
-                .build()
-    }
+    lateinit var component: PokeManagerAppComponent
 
     override fun onCreate() {
         super.onCreate()
+        component = DaggerPokeManagerAppComponent.builder()
+                .pokeManagerAppModule(PokeManagerAppModule(this))
+                .build()
     }
 }

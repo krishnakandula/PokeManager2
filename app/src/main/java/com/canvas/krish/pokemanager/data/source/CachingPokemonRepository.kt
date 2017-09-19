@@ -1,6 +1,7 @@
 package com.canvas.krish.pokemanager.data.source
 
 import android.content.Context
+import android.util.Log
 import com.canvas.krish.pokemanager.data.models.Pokemon
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.network.PokemonApi
@@ -20,6 +21,7 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
 
     companion object {
         private val INITIAL_DATA_PATH: String = "initial_data.json"
+        private val LOG_TAG: String = CachingPokemonRepository::class.simpleName!!
     }
 
     private var cachedPokemonList: MutableList<PokemonListResult> = mutableListOf()
@@ -30,7 +32,7 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
                 try {
                     val jsonArray: JSONArray? = parseInitialData(context)
                     if (jsonArray != null) {
-                        for (index in 0..jsonArray.length()) {
+                        for (index in 0 until jsonArray.length()) {
                             val jsonObject: JSONObject = jsonArray.getJSONObject(index)
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
                                     jsonObject.getInt("_id"),
@@ -41,11 +43,16 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
                         }
                     }
                 } catch (e: JSONException) {
+                    Log.e(LOG_TAG, e.message)
                     emitter.onError(e)
                 }
             }
 
-            if (offset < 0) emitter.onError(IndexOutOfBoundsException("Invalid offset given"))
+            if (offset < 0) {
+                val error: String = "Invalid offset given"
+                Log.e(LOG_TAG, error)
+                emitter.onError(IndexOutOfBoundsException(error))
+            }
 
             //Return empty list if offset is > number of elements
             if (offset > cachedPokemonList.size) emitter.onSuccess(listOf())

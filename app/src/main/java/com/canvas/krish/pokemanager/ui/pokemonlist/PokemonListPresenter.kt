@@ -1,7 +1,11 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
+import android.util.Log
+import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.data.source.PokemonRepository
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -12,6 +16,7 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
 
     companion object {
         private val RETRIEVAL_LIMIT: Int = 20
+        private val LOG_TAG: String = PokemonListPresenter::class.simpleName!!
     }
 
     override fun start() {
@@ -23,7 +28,22 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
         pokemonRepository.getPokemonList(offset, limit)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe()
+                .subscribe(object: SingleObserver<List<PokemonListResult>> {
+                    override fun onSubscribe(d: Disposable?) {
+                    }
+
+                    override fun onSuccess(result: List<PokemonListResult>?) {
+                        view.stopLoading()
+                        if(result != null) {
+                            view.setData(result)
+                        }
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        view.stopLoading()
+                        view.showErrorLoadingData()
+                    }
+                })
     }
 
     override fun onRefresh() {

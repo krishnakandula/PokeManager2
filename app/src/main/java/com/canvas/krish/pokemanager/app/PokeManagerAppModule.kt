@@ -8,7 +8,7 @@ import dagger.Provides
 /**
  * Created by Krishna Chaitanya Kandula on 9/16/2017.
  */
-@Module(includes = arrayOf(PokeManagerAppModule::class))
+@Module
 class PokeManagerAppModule(private val application: PokeManagerApplication) {
     
     @Provides
