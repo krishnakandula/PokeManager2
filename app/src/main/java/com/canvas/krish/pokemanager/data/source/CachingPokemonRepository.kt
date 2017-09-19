@@ -4,19 +4,19 @@ import android.content.Context
 import com.canvas.krish.pokemanager.data.models.Pokemon
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.network.PokemonApi
+import io.reactivex.Single
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
 import java.io.InputStream
 
 /**
  * Created by Krishna Chaitanya Kandula on 9/16/2017.
  */
 class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val context: Context) : PokemonRepository {
-    //TODO: Implement caching
 
     companion object {
         private val INITIAL_DATA_PATH: String = "initial_data.json"
@@ -24,20 +24,37 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
 
     private var cachedPokemonList: MutableList<PokemonListResult> = mutableListOf()
 
-    override fun getPokemonList(offset: Int, limit: Int, onSuccess: (List<PokemonListResult>) -> Unit, onError: (t: Throwable?) -> Unit) {
-        if (cachedPokemonList.isEmpty()) {
-            TODO("Parse initial_data.json to retrieve pokemon list data")
-            try {
-                cachedPokemonList = parseInitialData(context)
+    override fun getPokemonList(offset: Int, limit: Int): Single<List<PokemonListResult>> {
+        val single: Single<List<PokemonListResult>> = Single.create { emitter ->
+            if (cachedPokemonList.isEmpty()) {
+                try {
+                    val jsonArray: JSONArray? = parseInitialData(context)
+                    if (jsonArray != null) {
+                        for (index in 0..jsonArray.length()) {
+                            val jsonObject: JSONObject = jsonArray.getJSONObject(index)
+                            val pokemonlistResult: PokemonListResult = PokemonListResult(
+                                    jsonObject.getInt("_id"),
+                                    jsonObject.getString("_name"),
+                                    jsonObject.getString("_front_default_sprite_uri"),
+                                    jsonObject.getString("_description"))
+                            cachedPokemonList.add(pokemonlistResult)
+                        }
+                    }
+                } catch (e: JSONException) {
+                    emitter.onError(e)
+                }
             }
+
+            if (offset < 0) emitter.onError(IndexOutOfBoundsException("Invalid offset given"))
+
+            //Return empty list if offset is > number of elements
+            if (offset > cachedPokemonList.size) emitter.onSuccess(listOf())
+
+            val range: Int = if (offset + limit > cachedPokemonList.size - 1) cachedPokemonList.size - 1 else offset + limit
+            emitter.onSuccess(cachedPokemonList.subList(offset, range).toList())
         }
 
-        if (offset < 0) return onError(IndexOutOfBoundsException("Invalid offset given"))
-
-        //Return empty list if offset is > number of elements
-        if (offset > cachedPokemonList.size) return onSuccess(listOf())
-        val range: Int = if (offset + limit > cachedPokemonList.size - 1) cachedPokemonList.size - 1 else offset + limit
-        onSuccess(cachedPokemonList.subList(offset, range).toList())
+        return single
     }
 
     private fun parseInitialData(context: Context): JSONArray? {
