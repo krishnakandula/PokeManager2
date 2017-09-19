@@ -2,6 +2,10 @@ package com.canvas.krish.pokemanager.data.source
 
 import android.content.Context
 import android.util.Log
+import com.amazonaws.HttpMethod
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
+import com.canvas.krish.pokemanager.app.Constants
 import com.canvas.krish.pokemanager.data.models.Pokemon
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.network.PokemonApi
@@ -13,11 +17,15 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.InputStream
+import java.net.URL
+import java.util.*
 
 /**
  * Created by Krishna Chaitanya Kandula on 9/16/2017.
  */
-class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val context: Context) : PokemonRepository {
+class CachingPokemonRepository(private val pokemonApi: PokemonApi,
+                               private val context: Context,
+                               private val amazonS3: AmazonS3) : PokemonRepository {
 
     companion object {
         private val INITIAL_DATA_PATH: String = "initial_data.json"
@@ -34,11 +42,13 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
                     if (jsonArray != null) {
                         for (index in 0 until jsonArray.length()) {
                             val jsonObject: JSONObject = jsonArray.getJSONObject(index)
+                            val id: Int = jsonObject.getInt("_id")
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
-                                    jsonObject.getInt("_id"),
+                                    id,
                                     jsonObject.getString("_name"),
                                     jsonObject.getString("_front_default_sprite_uri"),
-                                    jsonObject.getString("_description"))
+                                    jsonObject.getString("_description"),
+                                    generatePokemonImageUrl(id))
                             cachedPokemonList.add(pokemonlistResult)
                         }
                     }
@@ -85,5 +95,21 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
                 onSuccess(response!!.body()!!)
             }
         })
+    }
+
+    private fun generatePokemonImageUrl(id: Int): String {
+        val expirationDate: Date = Date()
+        val msec: Long = expirationDate.time + (1000 * 60 * 60)     //1 hour
+        expirationDate.time = msec
+
+        val presignedUrlRequest: GeneratePresignedUrlRequest = GeneratePresignedUrlRequest(
+                Constants.BUCKET_NAME,
+                "$id.png")
+                .withMethod(HttpMethod.GET)
+                .withExpiration(expirationDate)
+
+        val url: String = amazonS3.generatePresignedUrl(presignedUrlRequest).toString()
+        Log.d(LOG_TAG, url)
+        return url
     }
 }

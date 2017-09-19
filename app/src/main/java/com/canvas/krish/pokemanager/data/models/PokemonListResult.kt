@@ -6,4 +6,5 @@ package com.canvas.krish.pokemanager.data.models
 data class PokemonListResult(val id: Int,
                              val name: String,
                              val spriteUri: String,
-                             val description: String)
+                             val description: String,
+                             val imageUrl: String)

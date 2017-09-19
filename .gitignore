@@ -44,7 +44,7 @@ freeline/
 freeline_project_description.json
 
 #Configuration files
-Config.java
+Config.*
 
 \.DS_Store
 

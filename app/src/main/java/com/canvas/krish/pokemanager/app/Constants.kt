@@ -6,5 +6,6 @@ package com.canvas.krish.pokemanager.app
 class Constants {
     companion object {
         val API_BASE_URL: String = "http://pokeapi.co/api/v2/"
+        val BUCKET_NAME: String = "pokemanager/assets/artwork"
     }
 }
