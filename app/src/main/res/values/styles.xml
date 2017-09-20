@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="TextViewBackground">
+        <item name="android:background">@drawable/rectangle_outline</item>
+        <item name="android:padding">@dimen/longTextPadding</item>
+    </style>
+
 </resources>

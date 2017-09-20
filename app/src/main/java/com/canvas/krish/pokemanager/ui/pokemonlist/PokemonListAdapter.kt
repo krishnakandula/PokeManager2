@@ -41,4 +41,5 @@ class PokemonListAdapter(private val context: Context) : RecyclerView.Adapter<Po
     override fun onBindViewHolder(holder: PokemonListViewHolder?, position: Int) {
         holder?.onBind(data[position])
     }
+
 }

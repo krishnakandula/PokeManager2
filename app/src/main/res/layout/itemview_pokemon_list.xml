@@ -21,42 +21,49 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textAppearance="@android:style/TextAppearance.Material.SearchResult.Subtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="#X" />
+            tools:text="#X"/>
 
         <TextView
             android:id="@+id/pokemonNameTextView_pokemonListItemView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginLeft="@dimen/shortTextViewMargin"
+            android:fontFamily="sans-serif"
+            android:textAppearance="@android:style/TextAppearance.Material.SearchResult.Title"
             app:layout_constraintStart_toEndOf="@id/pokemonIdTextView_PokemonListItemView"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Pokemon name" />
+            tools:text="Pokemon name"/>
 
         <TextView
+            style="@style/TextViewBackground"
             android:id="@+id/pokemonType1TextView_pokemonListItemView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pokemonIdTextView_PokemonListItemView"
+            app:layout_constraintTop_toBottomOf="@+id/pokemonNameTextView_pokemonListItemView"
             tools:text="Type 1"/>
 
         <TextView
+            style="@style/TextViewBackground"
             android:id="@+id/pokemonType2TextView_pokemonListItemView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@+id/pokemonType1TextView_pokemonListItemView"
-            app:layout_constraintTop_toBottomOf="@+id/pokemonIdTextView_PokemonListItemView"
+            app:layout_constraintTop_toBottomOf="@+id/pokemonNameTextView_pokemonListItemView"
+            android:background="@drawable/rectangle_outline"
             tools:text="Type 2"/>
 
         <TextView
             android:id="@+id/pokemonDescriptionTextView_pokemonListItemView"
+            style="@style/TextViewBackground"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
@@ -66,7 +73,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/pokemonImageView_pokemonListItemView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pokemonType2TextView_pokemonListItemView"
+            app:layout_constraintTop_toBottomOf="@+id/pokemonType1TextView_pokemonListItemView"
             tools:text="Description"/>
 
         <de.hdodenhof.circleimageview.CircleImageView

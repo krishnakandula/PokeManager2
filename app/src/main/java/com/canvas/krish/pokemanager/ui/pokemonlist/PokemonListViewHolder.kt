@@ -2,6 +2,7 @@ package com.canvas.krish.pokemanager.ui.pokemonlist
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.support.v7.graphics.Palette
 import android.support.v7.widget.RecyclerView
@@ -32,6 +33,16 @@ class PokemonListViewHolder(itemView: View, private val context: Context) : Recy
         itemView.pokemonIdTextView_PokemonListItemView.text = "#${pokemonListResult.id}"
         itemView.pokemonNameTextView_pokemonListItemView.text = pokemonListResult.name
         itemView.pokemonDescriptionTextView_pokemonListItemView.text = pokemonListResult.description
+        itemView.pokemonType1TextView_pokemonListItemView.text = pokemonListResult.type1.toString().toLowerCase().capitalize()
+        if(pokemonListResult.type2 != null) {
+            itemView.pokemonType2TextView_pokemonListItemView.text = pokemonListResult.type2.toString().toLowerCase().capitalize()
+            itemView.pokemonType2TextView_pokemonListItemView.visibility = View.VISIBLE
+        } else {
+            itemView.pokemonType2TextView_pokemonListItemView.text = ""
+            itemView.pokemonType2TextView_pokemonListItemView.visibility = View.GONE
+        }
+
+        itemView.cardview_PokemonListItemView.setCardBackgroundColor(Color.parseColor(pokemonListResult.type1.color))
 
         Picasso.with(context)
                 .load(pokemonListResult.imageUrl)
@@ -46,7 +57,7 @@ class PokemonListViewHolder(itemView: View, private val context: Context) : Recy
                                     override fun onSuccess(palette: Palette?) {
                                         if(palette != null) {
                                             val defaultColor: Int = context.getColor(R.color.primary)
-                                            itemView.cardview_PokemonListItemView.setCardBackgroundColor(palette.getLightMutedColor(defaultColor))
+//                                            itemView.cardview_PokemonListItemView.setCardBackgroundColor(palette.getLightMutedColor(defaultColor))
                                         }
                                     }
 

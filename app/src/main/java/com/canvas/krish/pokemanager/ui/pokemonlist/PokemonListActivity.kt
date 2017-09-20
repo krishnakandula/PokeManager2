@@ -1,10 +1,12 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.app.PokeManagerApplication
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
@@ -81,6 +83,12 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
 
         pokemonRecyclerView_pokemonListActivity.adapter = listAdapter
         pokemonRecyclerView_pokemonListActivity.layoutManager = layoutManager
+        pokemonRecyclerView_pokemonListActivity.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                presenter.onScroll(layoutManager.findFirstVisibleItemPosition())
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -132,5 +140,11 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     override fun showErrorLoadingData() {
         val error = "Unable to load data"
         Snackbar.make(window.decorView.rootView, error, Snackbar.LENGTH_LONG).show()
+    }
+
+    override fun changeToolbarColor(color: String) {
+        val parsedColor: Int = Color.parseColor(color)
+        toolbar_pokemonListActivity.setBackgroundColor(parsedColor)
+        window.statusBarColor = parsedColor
     }
 }

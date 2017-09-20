@@ -14,11 +14,13 @@ interface PokemonListContract {
         fun updateData(additionalPokemonListResults: List<PokemonListResult>)
         fun getExistingData(): List<PokemonListResult>?
         fun showErrorLoadingData()
+        fun changeToolbarColor(color: String)
     }
 
     interface Presenter {
         fun start()
         fun getData(offset: Int, limit: Int, refresh: Boolean)
         fun onRefresh()
+        fun onScroll(firstItemVisiblePosition: Int)
     }
 }

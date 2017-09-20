@@ -15,7 +15,7 @@ import javax.inject.Inject
 class PokemonListPresenter @Inject constructor(private val pokemonRepository: PokemonRepository, private val view: PokemonListContract.View) : PokemonListContract.Presenter {
 
     companion object {
-        private val RETRIEVAL_LIMIT: Int = 20
+        private val RETRIEVAL_LIMIT: Int = 151
         private val LOG_TAG: String = PokemonListPresenter::class.simpleName!!
     }
 
@@ -53,5 +53,10 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
 
     override fun onRefresh() {
         getData(0, RETRIEVAL_LIMIT, false)
+    }
+
+    override fun onScroll(firstItemVisiblePosition: Int) {
+        val color: String? = view.getExistingData()?.get(firstItemVisiblePosition)?.type1!!.color
+        if(color != null) view.changeToolbarColor(color)
     }
 }

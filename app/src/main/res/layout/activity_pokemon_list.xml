@@ -8,13 +8,14 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar_pokemonListActivity"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            tools:layout_editor_absoluteY="0dp" />
+            tools:layout_editor_absoluteY="0dp"/>
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -25,10 +26,10 @@
         <android.support.v7.widget.RecyclerView
             android:background="@color/recylerviewBackgroundColor"
             android:id="@+id/pokemonRecyclerView_pokemonListActivity"
+            android:paddingTop="?attr/actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="0dp"
-            android:paddingTop="?attr/actionBarSize" />
+            android:layout_marginBottom="0dp"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </android.support.design.widget.CoordinatorLayout>
