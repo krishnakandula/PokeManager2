@@ -1,6 +1,5 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
-import android.util.Log
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.data.source.PokemonRepository
 import io.reactivex.SingleObserver
@@ -20,7 +19,10 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
     }
 
     override fun start() {
-        getData(0, RETRIEVAL_LIMIT, false)
+        var existingData: List<PokemonListResult>? = view.getExistingData()
+        if(existingData == null || existingData.isEmpty()) {
+            getData(0, RETRIEVAL_LIMIT, false)
+        }
     }
 
     override fun getData(offset: Int, limit: Int, refresh: Boolean) {

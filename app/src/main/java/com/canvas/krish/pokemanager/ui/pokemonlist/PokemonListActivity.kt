@@ -1,6 +1,7 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -18,12 +19,16 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     companion object {
         private val LOG_TAG: String = PokemonListActivity::class.simpleName!!
         private val DRAWER_ITEM_POKEDEX_IDENTIFIER: Long = 0
+        private val BUNDLE_RECYCLER_LAYOUT: String = "pokemonlistactivity.recycler.layout"
+        private val BUNDLE_RECYCLER_DATA: String = "pokemonlistactivitiy.recycler.data"
     }
 
     @Inject lateinit var presenter: PokemonListContract.Presenter
 
     private lateinit var navDrawer: Drawer
     private lateinit var listAdapter: PokemonListAdapter
+    private lateinit var layoutManager: LinearLayoutManager
+    private var listState: Parcelable? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +50,9 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     override fun onResume() {
         super.onResume()
         presenter.start()
+        if(listState != null) {
+            layoutManager.onRestoreInstanceState(listState)
+        }
     }
 
     private fun setupToolbar() {
@@ -67,10 +75,41 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
 
     private fun setupRecyclerView() {
         listAdapter = PokemonListAdapter(this)
-        pokemonRecyclerView_pokemonListActivity.adapter = listAdapter
-        pokemonRecyclerView_pokemonListActivity.layoutManager = LinearLayoutManager(this,
+        layoutManager = LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL,
                 false)
+
+        pokemonRecyclerView_pokemonListActivity.adapter = listAdapter
+        pokemonRecyclerView_pokemonListActivity.layoutManager = layoutManager
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        //Save recyclerview state
+        outState?.putParcelable(BUNDLE_RECYCLER_LAYOUT, pokemonRecyclerView_pokemonListActivity.layoutManager.onSaveInstanceState())
+
+        //Save data
+        val savedData: ArrayList<PokemonListResult> = ArrayList()
+        savedData.addAll(listAdapter.data)
+        outState?.putParcelableArrayList(BUNDLE_RECYCLER_DATA, savedData)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (savedInstanceState != null) {
+            //Restore data
+            val restoredData: ArrayList<PokemonListResult> = savedInstanceState.getParcelableArrayList(BUNDLE_RECYCLER_DATA)
+            listAdapter.data = restoredData.toMutableList()
+
+            //Restore recyclerview state
+            listState = savedInstanceState.getParcelable(BUNDLE_RECYCLER_LAYOUT)
+            layoutManager.onRestoreInstanceState(listState)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        listState = layoutManager.onSaveInstanceState()
     }
 
     override fun showLoading() {
@@ -88,7 +127,7 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     override fun updateData(additionalPokemonListResults: List<PokemonListResult>) {
     }
 
-    override fun getExistingData(): List<PokemonListResult>? = null
+    override fun getExistingData(): List<PokemonListResult>? = listAdapter.data
 
     override fun showErrorLoadingData() {
         val error = "Unable to load data"
