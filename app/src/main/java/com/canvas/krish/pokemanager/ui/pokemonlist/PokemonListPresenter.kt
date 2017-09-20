@@ -1,5 +1,6 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
+import android.util.Log
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.data.source.PokemonRepository
 import io.reactivex.SingleObserver
@@ -32,6 +33,7 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: SingleObserver<List<PokemonListResult>> {
                     override fun onSubscribe(d: Disposable?) {
+                        //Not implemented
                     }
 
                     override fun onSuccess(result: List<PokemonListResult>?) {
@@ -43,6 +45,7 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
 
                     override fun onError(e: Throwable?) {
                         view.stopLoading()
+                        Log.e(LOG_TAG, e!!.message, e)
                         view.showErrorLoadingData()
                     }
                 })

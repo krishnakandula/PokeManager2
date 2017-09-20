@@ -131,6 +131,6 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
 
     override fun showErrorLoadingData() {
         val error = "Unable to load data"
-        Snackbar.make(window.decorView.rootView, error, Snackbar.LENGTH_SHORT).show()
+        Snackbar.make(window.decorView.rootView, error, Snackbar.LENGTH_LONG).show()
     }
 }

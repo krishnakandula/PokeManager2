@@ -8,9 +8,9 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.canvas.krish.pokemanager.app.Constants
 import com.canvas.krish.pokemanager.data.models.Pokemon
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
+import com.canvas.krish.pokemanager.data.models.Type
 import com.canvas.krish.pokemanager.network.PokemonApi
 import com.google.common.cache.Cache
-import com.google.common.cache.CacheBuilder
 import io.reactivex.Single
 import org.json.JSONArray
 import org.json.JSONException
@@ -19,7 +19,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.InputStream
-import java.net.URL
 import java.util.*
 
 /**
@@ -46,12 +45,21 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                         for (index in 0 until jsonArray.length()) {
                             val jsonObject: JSONObject = jsonArray.getJSONObject(index)
                             val id: Int = jsonObject.getInt("_id")
+
+                            //Check if Pokemon contains second type
+                            var type2: Type? = null
+                            if(jsonObject.has("_type2")) {
+                                type2 = Type.valueOf(jsonObject.getString("_type2").toUpperCase())
+                            }
+
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
                                     id,
                                     jsonObject.getString("_name").capitalize(),
                                     jsonObject.getString("_front_default_sprite_uri"),
                                     jsonObject.getString("_description"),
-                                    generatePokemonImageUrl(id))
+                                    generatePokemonImageUrl(id),
+                                    Type.valueOf(jsonObject.getString("_type1").toUpperCase()),
+                                    type2)
                             cachedPokemonList.add(pokemonlistResult)
                         }
                     }
