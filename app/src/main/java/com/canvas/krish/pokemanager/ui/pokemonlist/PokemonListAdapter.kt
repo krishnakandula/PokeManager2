@@ -23,7 +23,7 @@ class PokemonListAdapter(private val context: Context) : RecyclerView.Adapter<Po
 
         }
 
-    protected fun updateData(additionalData: List<PokemonListResult>) {
+    fun updateData(additionalData: List<PokemonListResult>) {
         val start: Int = data.size
         data.addAll(additionalData)
         notifyItemRangeInserted(start, data.size)

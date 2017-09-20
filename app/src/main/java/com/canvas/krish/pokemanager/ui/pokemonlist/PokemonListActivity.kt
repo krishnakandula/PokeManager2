@@ -87,7 +87,9 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
         pokemonRecyclerView_pokemonListActivity.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                presenter.onScroll(layoutManager.findFirstVisibleItemPosition())
+                presenter.onScroll(layoutManager.findFirstVisibleItemPosition(),
+                        layoutManager.findLastVisibleItemPosition(),
+                        layoutManager.itemCount)
             }
         })
     }
@@ -134,6 +136,7 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     }
 
     override fun updateData(additionalPokemonListResults: List<PokemonListResult>) {
+        listAdapter.updateData(additionalPokemonListResults)
     }
 
     override fun getExistingData(): List<PokemonListResult>? = listAdapter.data

@@ -19,8 +19,9 @@ interface PokemonListContract {
 
     interface Presenter {
         fun start()
-        fun getData(offset: Int, limit: Int, refresh: Boolean)
+        fun getData()
+        fun getAdditionalData(offset: Int, limit: Int)
         fun onRefresh()
-        fun onScroll(firstItemVisiblePosition: Int)
+        fun onScroll(firstItemVisiblePosition: Int, lastItemVisiblePosition: Int, totalItemCount: Int)
     }
 }
