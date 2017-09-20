@@ -60,6 +60,7 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     private fun setupToolbar() {
         setSupportActionBar(toolbar_pokemonListActivity)
         supportActionBar?.title = getString(R.string.drawer_item_pokedex)
+        toolbar_pokemonListActivity.setTitleTextColor(getColor(R.color.md_white_1000))
     }
 
     private fun setupNavDrawer() {

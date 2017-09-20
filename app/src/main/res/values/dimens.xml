@@ -4,6 +4,8 @@
     <dimen name="minPokemonItemViewHeight">132dp</dimen>
     <dimen name="minPokemonImageViewDiameter">96dp</dimen>
 
+    <dimen name="defaultOutlineStrokeWidth">1dp</dimen>
+
     <dimen name="defaultItemViewMargin">4dp</dimen>
     <dimen name="shortTextViewMargin">4dp</dimen>
     <dimen name="longTextPadding">8dp</dimen>

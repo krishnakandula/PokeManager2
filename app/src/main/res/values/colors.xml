@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#FFAB91</color>
     <color name="colorAccent">#303F9F</color>
 
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
     <color name="recylerviewBackgroundColor">#E0E0E0</color>
 
 </resources>

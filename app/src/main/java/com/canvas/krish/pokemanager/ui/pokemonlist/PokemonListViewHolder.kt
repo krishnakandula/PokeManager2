@@ -1,23 +1,13 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
-import android.support.v7.graphics.Palette
+import android.graphics.drawable.GradientDrawable
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
-import android.widget.ImageView
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
-import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
-import io.reactivex.Single
-import io.reactivex.SingleObserver
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.itemview_pokemon_list.view.*
 
 /**
@@ -43,44 +33,33 @@ class PokemonListViewHolder(itemView: View, private val context: Context) : Recy
         }
 
         itemView.cardview_PokemonListItemView.setCardBackgroundColor(Color.parseColor(pokemonListResult.type1.color))
+        changeTextColors(context.getColor(R.color.md_white_1000))
+        changeOutlineColors(context.getColor(R.color.md_white_1000))
 
         Picasso.with(context)
                 .load(pokemonListResult.imageUrl)
                 .resizeDimen(R.dimen.minPokemonImageViewDiameter, R.dimen.minPokemonImageViewDiameter)
                 .centerInside()
-                .into(itemView.pokemonImageView_pokemonListItemView, object: Callback {
-                    override fun onSuccess() {
-                        generateColorPalette((((itemView.pokemonImageView_pokemonListItemView as ImageView).drawable) as BitmapDrawable).bitmap)
-                                .subscribeOn(Schedulers.computation())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(object: SingleObserver<Palette> {
-                                    override fun onSuccess(palette: Palette?) {
-                                        if(palette != null) {
-                                            val defaultColor: Int = context.getColor(R.color.primary)
-//                                            itemView.cardview_PokemonListItemView.setCardBackgroundColor(palette.getLightMutedColor(defaultColor))
-                                        }
-                                    }
-
-                                    override fun onSubscribe(d: Disposable?) {
-                                        //Not implemented
-                                    }
-
-                                    override fun onError(e: Throwable?) {
-                                        Log.e(LOG_TAG, e!!.message, e)
-                                    }
-                                })
-                    }
-
-                    override fun onError() {
-                        Log.e(LOG_TAG, "Unable to load image into ImageView")
-                    }
-                })
+                .into(itemView.pokemonImageView_pokemonListItemView)
     }
 
-    private fun generateColorPalette(bitmap: Bitmap): Single<Palette> {
-        return Single.create { emitter ->
-            val palette = Palette.from(bitmap).generate()
-            emitter.onSuccess(palette)
-        }
+    private fun changeTextColors(color: Int) {
+        itemView.pokemonDescriptionTextView_pokemonListItemView.setTextColor(color)
+        itemView.pokemonIdTextView_PokemonListItemView.setTextColor(color)
+        itemView.pokemonNameTextView_pokemonListItemView.setTextColor(color)
+        itemView.pokemonType1TextView_pokemonListItemView.setTextColor(color)
+        itemView.pokemonType2TextView_pokemonListItemView.setTextColor(color)
+    }
+
+    private fun changeOutlineColors(color: Int) {
+        (itemView.pokemonDescriptionTextView_pokemonListItemView.background as GradientDrawable).setStroke(
+                context.resources.getDimension(R.dimen.defaultOutlineStrokeWidth).toInt(),
+                color)
+        (itemView.pokemonType1TextView_pokemonListItemView.background as GradientDrawable).setStroke(
+                context.resources.getDimension(R.dimen.defaultOutlineStrokeWidth).toInt(),
+                color)
+        (itemView.pokemonType2TextView_pokemonListItemView.background as GradientDrawable).setStroke(
+                context.resources.getDimension(R.dimen.defaultOutlineStrokeWidth).toInt(),
+                color)
     }
 }
