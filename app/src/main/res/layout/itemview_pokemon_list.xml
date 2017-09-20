@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardview_PokemonListItemView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/defaultItemViewMargin"
-    android:background="@color/cardview_dark_background"
-    android:elevation="@dimen/cardview_default_elevation"
-    app:cardCornerRadius="@dimen/cardview_default_radius">
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:id="@+id/cardview_PokemonListItemView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/defaultItemViewMargin"
+                                    android:background="@color/cardview_dark_background"
+                                    android:elevation="@dimen/cardview_default_elevation"
+                                    app:cardCornerRadius="@dimen/cardview_default_radius">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -30,8 +30,8 @@
             android:id="@+id/pokemonNameTextView_pokemonListItemView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="@dimen/shortTextViewMargin"
+            android:layout_marginTop="8dp"
             android:fontFamily="sans-serif"
             android:textAppearance="@android:style/TextAppearance.Material.SearchResult.Title"
             app:layout_constraintStart_toEndOf="@id/pokemonIdTextView_PokemonListItemView"
@@ -39,8 +39,8 @@
             tools:text="Pokemon name"/>
 
         <TextView
-            style="@style/TextViewBackground"
             android:id="@+id/pokemonType1TextView_pokemonListItemView"
+            style="@style/TextViewBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -50,15 +50,15 @@
             tools:text="Type 1"/>
 
         <TextView
-            style="@style/TextViewBackground"
             android:id="@+id/pokemonType2TextView_pokemonListItemView"
+            style="@style/TextViewBackground"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:background="@drawable/rectangle_outline"
             app:layout_constraintStart_toEndOf="@+id/pokemonType1TextView_pokemonListItemView"
             app:layout_constraintTop_toBottomOf="@+id/pokemonNameTextView_pokemonListItemView"
-            android:background="@drawable/rectangle_outline"
             tools:text="Type 2"/>
 
         <TextView
@@ -83,6 +83,8 @@
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginTop="8dp"
+            app:civ_border_color="@color/white"
+            app:civ_border_width="@dimen/defaultOutlineStrokeWidth"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
