@@ -82,7 +82,7 @@ class PokemonListPresenter @Inject constructor(private val pokemonRepository: Po
 
     override fun onScroll(firstItemVisiblePosition: Int, lastItemVisiblePosition: Int, totalItemCount: Int) {
         //Update toolbar color
-        val color: String? = view.getExistingData()?.get(firstItemVisiblePosition)?.type1!!.color
+        val color: Int? = view.getExistingData()?.get(firstItemVisiblePosition)?.palette?.lightMuted
         if (color != null) view.changeToolbarColor(color)
 
         //Check if additional data needs to be loaded

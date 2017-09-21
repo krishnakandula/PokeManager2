@@ -13,4 +13,5 @@ data class PokemonListResult(val id: Int,
                              val description: String,
                              val imageUrl: String,
                              val type1: Type,
-                             val type2: Type?) : Parcelable
+                             val type2: Type?,
+                             val palette: PokemonColorPalette?) : Parcelable

@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.canvas.krish.pokemanager.app.Constants
 import com.canvas.krish.pokemanager.data.models.Pokemon
+import com.canvas.krish.pokemanager.data.models.PokemonColorPalette
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.data.models.Type
 import com.canvas.krish.pokemanager.network.PokemonApi
@@ -42,7 +43,7 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                 try {
                     val jsonArray: JSONArray? = parseInitialData(context)
                     if (jsonArray != null) {
-                        for (index in 0 until jsonArray.length()) {
+                        for (index in 0 until 150) {
                             val jsonObject: JSONObject = jsonArray.getJSONObject(index)
                             val id: Int = jsonObject.getInt("_id")
 
@@ -52,6 +53,16 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                                 type2 = Type.valueOf(jsonObject.getString("_type2").toUpperCase())
                             }
 
+                            //Retrieve Color JsonObject
+                            val colorObject: JSONObject = jsonObject.getJSONObject("_color")
+                            val colorPalette: PokemonColorPalette = PokemonColorPalette(colorObject.getInt("_lightMuted"),
+                                    colorObject.getInt("_darkMuted"),
+                                    colorObject.getInt("_dominant"),
+                                    colorObject.getInt("_darkVibrant"),
+                                    colorObject.getInt("_lightVibrant"),
+                                    colorObject.getInt("_muted"),
+                                    colorObject.getInt("_vibrant"))
+
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
                                     id,
                                     jsonObject.getString("_name").capitalize(),
@@ -59,7 +70,8 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                                     jsonObject.getString("_description"),
                                     generatePokemonImageUrl(id),
                                     Type.valueOf(jsonObject.getString("_type1").toUpperCase()),
-                                    type2)
+                                    type2,
+                                    colorPalette)
                             cachedPokemonList.add(pokemonlistResult)
                         }
                     }

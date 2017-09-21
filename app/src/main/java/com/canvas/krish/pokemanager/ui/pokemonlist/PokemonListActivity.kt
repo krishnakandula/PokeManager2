@@ -1,6 +1,5 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
-import android.graphics.Color
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
@@ -146,9 +145,8 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
         Snackbar.make(window.decorView.rootView, error, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun changeToolbarColor(color: String) {
-        val parsedColor: Int = Color.parseColor(color)
-        toolbar_pokemonListActivity.setBackgroundColor(parsedColor)
-        window.statusBarColor = parsedColor
+    override fun changeToolbarColor(color: Int) {
+        toolbar_pokemonListActivity.setBackgroundColor(color)
+        window.statusBarColor = color
     }
 }
