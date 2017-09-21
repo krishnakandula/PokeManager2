@@ -12,7 +12,7 @@ interface PokemonListContract {
     interface View : BaseLcView<List<PokemonListResult>> {
 
         fun updateData(additionalPokemonListResults: List<PokemonListResult>)
-        fun changeToolbarColor(color: String)
+        fun changeToolbarColor(color: Int)
     }
 
     interface Presenter : BaseLcPresenter {
