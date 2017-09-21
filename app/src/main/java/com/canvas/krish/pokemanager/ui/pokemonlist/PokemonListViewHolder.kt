@@ -2,7 +2,6 @@ package com.canvas.krish.pokemanager.ui.pokemonlist
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.GradientDrawable
 import android.support.v7.graphics.Palette
@@ -12,9 +11,6 @@ import android.view.View
 import android.widget.ImageView
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
-import com.canvas.krish.pokemanager.data.models.Type
-import com.canvas.krish.pokemanager.data.source.CachingPokemonRepository
-import com.google.gson.stream.JsonWriter
 import com.squareup.picasso.Callback
 import com.squareup.picasso.Picasso
 import io.reactivex.Single
@@ -36,6 +32,8 @@ class PokemonListViewHolder(itemView: View, private val context: Context) : Recy
     companion object {
         private val LOG_TAG: String = PokemonListViewHolder::class.simpleName!!
         private val INITIAL_DATA_PATH: String = "initial_data.json"
+        private var dataArray: JSONArray? = null
+        private var numberOfWrittenColors: Int = 0
     }
 
     fun onBind(pokemonListResult: PokemonListResult) {
@@ -93,29 +91,47 @@ class PokemonListViewHolder(itemView: View, private val context: Context) : Recy
         try {
             val jsonArray: JSONArray? = parseInitialData(context)
             if (jsonArray != null) {
-                val jsonObject: JSONObject = jsonArray.getJSONObject(id)
-                jsonObject.put("_color", palette.getLightMutedColor(context.getColor(R.color.primary)))
-//                if(id==150) {
-                    val file: File = File("${context.filesDir.absolutePath}colors_data.json")
-                    Log.d(LOG_TAG, context.filesDir.absolutePath)
-                    val output: Writer = BufferedWriter(FileWriter(file))
-                    output.write(jsonArray.toString())
-                    output.close()
-//                }
+                val jsonObject: JSONObject = jsonArray.getJSONObject(id - 1)
+                if (!jsonObject.has("-color")) {
+
+                    val colorJsonObj: JSONObject = JSONObject()
+                    colorJsonObj.put("_lightMuted", palette.getLightMutedColor(context.getColor(R.color.primary)))
+                    colorJsonObj.put("_darkMuted", palette.getDarkMutedColor(context.getColor(R.color.primary)))
+                    colorJsonObj.put("_dominant", palette.getDominantColor(context.getColor(R.color.primary)))
+                    colorJsonObj.put("_darkVibrant", palette.getDarkVibrantColor(context.getColor(R.color.primary)))
+                    colorJsonObj.put("_lightVibrant", palette.getLightVibrantColor(context.getColor(R.color.primary)))
+                    colorJsonObj.put("_muted", palette.getMutedColor(context.getColor(R.color.primary)))
+                    colorJsonObj.put("_vibrant", palette.getVibrantColor(context.getColor(R.color.primary)))
+                    jsonObject.put("_color", colorJsonObj)
+                    dataArray = jsonArray
+
+                    numberOfWrittenColors++
+                    Log.d(LOG_TAG, "$numberOfWrittenColors")
+                    if (numberOfWrittenColors == 151) {
+                        val file: File = File("${context.filesDir.absolutePath}colors_data.json")
+                        Log.d(LOG_TAG, context.filesDir.absolutePath)
+                        val output: Writer = BufferedWriter(FileWriter(file))
+                        output.write(jsonArray.toString())
+                        output.close()
+                    }
+                }
             }
         } catch (e: JSONException) {
         }
     }
 
     private fun parseInitialData(context: Context): JSONArray? {
-        val inputStream: InputStream = context.assets.open(INITIAL_DATA_PATH)
-        val size: Int = inputStream.available()
-        val buffer = ByteArray(size)
-        inputStream.read(buffer)
-        inputStream.close()
+        if (dataArray == null) {
+            val inputStream: InputStream = context.assets.open(INITIAL_DATA_PATH)
+            val size: Int = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
 
-        val jsonData = String(buffer)
-        return JSONArray(jsonData)
+            val jsonData = String(buffer)
+            dataArray = JSONArray(jsonData)
+        }
+        return dataArray
     }
 
     private fun changeTextColors(color: Int) {
