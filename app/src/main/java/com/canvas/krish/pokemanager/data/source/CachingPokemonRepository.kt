@@ -66,7 +66,6 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
                                     id,
                                     jsonObject.getString("_name").capitalize(),
-                                    jsonObject.getString("_front_default_sprite_uri"),
                                     jsonObject.getString("_description"),
                                     generatePokemonImageUrl(id),
                                     Type.valueOf(jsonObject.getString("_type1").toUpperCase()),
@@ -108,16 +107,25 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
         return JSONArray(jsonData)
     }
 
-    override fun getPokemon(id: Int, onSuccess: (Pokemon) -> Unit, onError: (t: Throwable?) -> Unit) {
-        pokemonApi.getPokemon(id).enqueue(object : Callback<Pokemon> {
-            override fun onFailure(call: Call<Pokemon>?, t: Throwable?) {
-                onError(t)
-            }
+    override fun getPokemon(id: Int): Single<Pokemon> {
+        val single: Single<Pokemon> = Single.create { emitter ->
+            pokemonApi.getPokemon(id).enqueue(object : Callback<Pokemon> {
+                override fun onFailure(call: Call<Pokemon>?, t: Throwable?) {
+                    if(t != null) {
+                        Log.e(LOG_TAG, t.message, t)
+                    }
+                    emitter.onError(t)
+                }
 
-            override fun onResponse(call: Call<Pokemon>?, response: Response<Pokemon>?) {
-                onSuccess(response!!.body()!!)
-            }
-        })
+                override fun onResponse(call: Call<Pokemon>?, response: Response<Pokemon>?) {
+                    if(response != null) {
+                        emitter.onSuccess(response.body())
+                    }
+                }
+            })
+        }
+
+        return single
     }
 
     private fun generatePokemonImageUrl(id: Int): String {

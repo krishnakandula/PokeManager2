@@ -20,7 +20,7 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
 
     @Inject lateinit var presenter: PokemonDetailContract.Presenter
 
-    private lateinit var data: Pokemon
+    private var data: Pokemon? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

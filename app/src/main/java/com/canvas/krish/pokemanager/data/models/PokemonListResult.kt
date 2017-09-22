@@ -9,7 +9,6 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PokemonListResult(val id: Int,
                              val name: String,
-                             val spriteUri: String,
                              val description: String,
                              val imageUrl: String,
                              val type1: Type,
