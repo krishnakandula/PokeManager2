@@ -7,7 +7,10 @@ import android.support.v7.app.AppCompatActivity
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.app.PokeManagerApplication
 import com.canvas.krish.pokemanager.data.models.Pokemon
+import com.canvas.krish.pokemanager.data.models.PokemonListResult
+import com.canvas.krish.pokemanager.ui.pokemonlist.PokemonListViewHolder
 import kotlinx.android.synthetic.main.activity_pokemon_detail.*
+import kotlinx.android.synthetic.main.itemview_pokemon_list.*
 import javax.inject.Inject
 
 class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
@@ -16,11 +19,13 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
         private val activity: String = PokemonDetailActivity::class.simpleName!!
         val bundle_id_key: String = "$activity.Bundle.Id.Key"
         val bundle_pokemon_data: String = "$activity.Bundle.Pokemon.Data"
+        val bundle_pokemon_list_result_data: String = "$activity.Bundle.PokemonListResult.Data"
     }
 
     @Inject lateinit var presenter: PokemonDetailContract.Presenter
 
     private var data: Pokemon? = null
+    private var listResultData: PokemonListResult? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,13 +70,22 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
 
     override fun setData(data: Pokemon) {
         this.data = data
+
     }
 
-    override fun getExistingData(): Pokemon? {
-        return this.data
+    override fun showPokemonListResultData(pokemonListResult: PokemonListResult) {
+       val viewHolder: PokemonListViewHolder = PokemonListViewHolder(
+               cardview_PokemonListItemView,
+               this,
+               {})
+        viewHolder.onBind(pokemonListResult)
     }
+
+    override fun getExistingData(): Pokemon? = this.data
 
     override fun showErrorLoadingData() {
         Snackbar.make(layout_PokemonListActivity, "Unable to retrieve data", Snackbar.LENGTH_LONG).show()
     }
+
+    override fun getExistingPokemonListResultData(): PokemonListResult? = listResultData
 }

@@ -26,7 +26,8 @@ data class Pokemon(
         @SerializedName("species") val species: Species,
         @SerializedName("sprites") val sprites: Sprites,
         @SerializedName("stats") val stats: List<Stats>,
-        @SerializedName("types") val types: List<Types>
+        @SerializedName("types") val types: List<Types>,
+        var pokemonListResult: PokemonListResult?
 ) : Parcelable
 
 @Parcelize

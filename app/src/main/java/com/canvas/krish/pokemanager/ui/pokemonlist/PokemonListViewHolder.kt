@@ -4,11 +4,9 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.View
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
-import com.squareup.picasso.NetworkPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.itemview_pokemon_list.view.*
 import org.json.JSONArray

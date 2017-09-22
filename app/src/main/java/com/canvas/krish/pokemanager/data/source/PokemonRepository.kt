@@ -11,6 +11,8 @@ interface PokemonRepository {
 
     fun getPokemonList(offset: Int, limit: Int): Single<List<PokemonListResult>>
 
+    fun getPokemonListResult(id: Int): Single<PokemonListResult>
+
     fun getPokemon(id: Int): Single<Pokemon>
 
 }

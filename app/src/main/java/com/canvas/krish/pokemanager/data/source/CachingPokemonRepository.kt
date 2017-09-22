@@ -118,8 +118,12 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
                 }
 
                 override fun onResponse(call: Call<Pokemon>?, response: Response<Pokemon>?) {
-                    if(response != null) {
+                    if(response?.body() != null) {
+                        val id: Int = response.body()!!.id
+                        response.body()!!.pokemonListResult = cachedPokemonList[id]
                         emitter.onSuccess(response.body())
+                    } else {
+                        onFailure(call, Exception("Unable to find a Pokemon"))
                     }
                 }
             })
@@ -146,5 +150,10 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi,
         }
 
         return cachedUrl
+    }
+
+    override fun getPokemonListResult(id: Int): Single<PokemonListResult> = Single.create { emitter ->
+        val idIndex: Int = id - 1
+        emitter.onSuccess(cachedPokemonList[idIndex])
     }
 }

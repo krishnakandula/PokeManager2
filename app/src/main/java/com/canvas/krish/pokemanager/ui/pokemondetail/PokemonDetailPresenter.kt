@@ -2,6 +2,7 @@ package com.canvas.krish.pokemanager.ui.pokemondetail
 
 import android.util.Log
 import com.canvas.krish.pokemanager.data.models.Pokemon
+import com.canvas.krish.pokemanager.data.models.PokemonListResult
 import com.canvas.krish.pokemanager.data.source.PokemonRepository
 import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,9 +24,8 @@ class PokemonDetailPresenter @Inject constructor(private val view: PokemonDetail
 
     override fun start() {
         var existingData: Pokemon? = view.getExistingData()
-        if(existingData == null) {
-            getData()
-        }
+        if(existingData == null) getData()
+        if(view.getExistingPokemonListResultData() == null) getPokemonListResultData()
     }
 
     override fun getData() {
@@ -50,6 +50,30 @@ class PokemonDetailPresenter @Inject constructor(private val view: PokemonDetail
                             Log.e(LOG_TAG, e.message, e)
                         }
                         view.stopLoading()
+                    }
+                })
+
+    }
+
+    override fun getPokemonListResultData() {
+        view.showLoading()
+        pokemonRepository.getPokemonListResult(pokemonId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object: SingleObserver<PokemonListResult> {
+                    override fun onSuccess(t: PokemonListResult?) {
+                        if(t != null) {
+                            view.showPokemonListResultData(t)
+                        }
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        Log.e(LOG_TAG, e?.message, e)
+                        view.showErrorLoadingData()
+                    }
+
+                    override fun onSubscribe(d: Disposable?) {
+                        //Not implemented
                     }
                 })
     }
