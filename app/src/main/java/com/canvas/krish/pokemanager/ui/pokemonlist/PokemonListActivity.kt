@@ -1,5 +1,6 @@
 package com.canvas.krish.pokemanager.ui.pokemonlist
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.design.widget.Snackbar
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.app.PokeManagerApplication
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
+import com.canvas.krish.pokemanager.ui.pokemondetail.PokemonDetailActivity
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.DrawerBuilder
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
@@ -76,7 +78,7 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     }
 
     private fun setupRecyclerView() {
-        listAdapter = PokemonListAdapter(this)
+        listAdapter = PokemonListAdapter(this, presenter::onClickPokemon)
         layoutManager = LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL,
                 false)
@@ -148,5 +150,11 @@ class PokemonListActivity : AppCompatActivity(), PokemonListContract.View {
     override fun changeToolbarColor(color: Int) {
         toolbar_pokemonListActivity.setBackgroundColor(color)
         window.statusBarColor = color
+    }
+
+    override fun showPokemonDetail(id: Int) {
+        val intent: Intent = Intent(this, PokemonDetailActivity::class.java)
+        intent.putExtra(PokemonDetailActivity.bundle_id_key, id)
+        startActivity(intent)
     }
 }

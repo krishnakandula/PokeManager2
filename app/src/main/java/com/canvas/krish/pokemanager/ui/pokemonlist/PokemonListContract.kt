@@ -13,11 +13,13 @@ interface PokemonListContract {
 
         fun updateData(additionalPokemonListResults: List<PokemonListResult>)
         fun changeToolbarColor(color: Int)
+        fun showPokemonDetail(id: Int)
     }
 
     interface Presenter : BaseLcPresenter {
 
         fun getAdditionalData(offset: Int, limit: Int)
         fun onScroll(firstItemVisiblePosition: Int, lastItemVisiblePosition: Int, totalItemCount: Int)
+        fun onClickPokemon(id: Int)
     }
 }

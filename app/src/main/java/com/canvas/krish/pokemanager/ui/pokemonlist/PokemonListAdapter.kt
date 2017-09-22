@@ -11,7 +11,7 @@ import com.canvas.krish.pokemanager.data.models.PokemonListResult
 /**
  * Created by Krishna Chaitanya Kandula on 9/18/2017.
  */
-class PokemonListAdapter(private val context: Context) : RecyclerView.Adapter<PokemonListViewHolder>() {
+class PokemonListAdapter(private val context: Context, private val onClickListener: (id: Int) -> Unit) : RecyclerView.Adapter<PokemonListViewHolder>() {
 
     var data: MutableList<PokemonListResult> = mutableListOf()
         set(newData) {
@@ -35,7 +35,7 @@ class PokemonListAdapter(private val context: Context) : RecyclerView.Adapter<Po
         val layoutInflater: LayoutInflater = LayoutInflater.from(context)
         val itemView: View = layoutInflater.inflate(R.layout.itemview_pokemon_list, parent, false)
 
-        return PokemonListViewHolder(itemView, context)
+        return PokemonListViewHolder(itemView, context, onClickListener)
     }
 
     override fun onBindViewHolder(holder: PokemonListViewHolder?, position: Int) {
