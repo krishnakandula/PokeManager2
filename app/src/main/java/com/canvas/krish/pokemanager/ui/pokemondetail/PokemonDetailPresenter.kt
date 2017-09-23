@@ -62,9 +62,7 @@ class PokemonDetailPresenter @Inject constructor(private val view: PokemonDetail
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object: SingleObserver<PokemonListResult> {
                     override fun onSuccess(t: PokemonListResult?) {
-                        if(t != null) {
-                            view.showPokemonListResultData(t)
-                        }
+                        if(t != null) view.showPokemonListResultData(t)
                     }
 
                     override fun onError(e: Throwable?) {

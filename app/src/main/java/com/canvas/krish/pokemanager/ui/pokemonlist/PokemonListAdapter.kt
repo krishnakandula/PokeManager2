@@ -39,7 +39,7 @@ class PokemonListAdapter(private val context: Context, private val onClickListen
     }
 
     override fun onBindViewHolder(holder: PokemonListViewHolder?, position: Int) {
-        holder?.onBind(data[position])
+        holder?.onBind(data[position], null)
     }
 
 }

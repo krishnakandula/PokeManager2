@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import com.canvas.krish.pokemanager.R
 import com.canvas.krish.pokemanager.app.PokeManagerApplication
 import com.canvas.krish.pokemanager.data.models.Pokemon
@@ -46,17 +47,17 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
     }
 
     override fun onSaveInstanceState(outState: Bundle?, outPersistentState: PersistableBundle?) {
-        if(this.data != null) {
-            outState?.putParcelable(bundle_pokemon_data, this.data)
-        }
+        if(this.data != null) outState?.putParcelable(bundle_pokemon_data, this.data)
+        if(this.listResultData != null) outState?.putParcelable(bundle_pokemon_list_result_data, this.listResultData)
+
         super.onSaveInstanceState(outState, outPersistentState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
         super.onRestoreInstanceState(savedInstanceState)
         if(savedInstanceState != null) {
-            val restoredData: Pokemon = savedInstanceState.getParcelable(bundle_pokemon_data)
-            this.data = restoredData
+            this.data = savedInstanceState.getParcelable(bundle_pokemon_data)
+            this.listResultData = savedInstanceState.getParcelable(bundle_pokemon_list_result_data)
         }
     }
 
@@ -74,11 +75,9 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
     }
 
     override fun showPokemonListResultData(pokemonListResult: PokemonListResult) {
-       val viewHolder: PokemonListViewHolder = PokemonListViewHolder(
-               cardview_PokemonListItemView,
-               this,
-               {})
-        viewHolder.onBind(pokemonListResult)
+        pokemonIdTextView_PokemonListItemView.text = "${pokemonListResult.id}"
+        val viewHolder: PokemonListViewHolder = PokemonListViewHolder(layout_PokemonListActivity, this, {})
+        viewHolder.onBind(pokemonListResult, itemview_pokemonDetailActivity as CardView)
     }
 
     override fun getExistingData(): Pokemon? = this.data
@@ -88,4 +87,5 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
     }
 
     override fun getExistingPokemonListResultData(): PokemonListResult? = listResultData
+
 }

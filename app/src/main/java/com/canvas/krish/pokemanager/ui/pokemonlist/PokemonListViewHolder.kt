@@ -3,6 +3,7 @@ package com.canvas.krish.pokemanager.ui.pokemonlist
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.support.v7.widget.CardView
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.canvas.krish.pokemanager.R
@@ -23,8 +24,8 @@ class PokemonListViewHolder(itemView: View, private val context: Context, privat
         private var numberOfWrittenColors: Int = 0
     }
 
-    fun onBind(pokemonListResult: PokemonListResult) {
-        itemView.setOnClickListener({v -> onClickListener(pokemonListResult.id)})
+    fun onBind(pokemonListResult: PokemonListResult, cardView: CardView?) {
+        itemView.setOnClickListener({ v -> onClickListener(pokemonListResult.id) })
 
         itemView.pokemonIdTextView_PokemonListItemView.text = "#${pokemonListResult.id}"
         itemView.pokemonNameTextView_pokemonListItemView.text = pokemonListResult.name
@@ -41,8 +42,10 @@ class PokemonListViewHolder(itemView: View, private val context: Context, privat
             itemView.pokemonType2CardView_pokemonListItemView.visibility = View.GONE
         }
 
-        if(pokemonListResult.palette != null) {
-            itemView.cardview_PokemonListItemView.setCardBackgroundColor(pokemonListResult.palette.muted)
+        if (pokemonListResult.palette != null) {
+            if (cardView == null) itemView.cardview_PokemonListItemView.setCardBackgroundColor(pokemonListResult.palette.muted)
+            else cardView.setCardBackgroundColor(pokemonListResult.palette.muted)
+
             itemView.pokemonImageView_pokemonListItemView.borderColor = pokemonListResult.palette.vibrant
         }
         changeTextColors(context.getColor(R.color.md_white_1000))
