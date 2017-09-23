@@ -1,9 +1,17 @@
 package com.canvas.krish.pokemanager.data.source
 
 import android.content.Context
+import android.util.Log
+import com.amazonaws.HttpMethod
+import com.amazonaws.services.s3.AmazonS3
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
+import com.canvas.krish.pokemanager.app.Constants
 import com.canvas.krish.pokemanager.data.models.Pokemon
+import com.canvas.krish.pokemanager.data.models.PokemonColorPalette
 import com.canvas.krish.pokemanager.data.models.PokemonListResult
+import com.canvas.krish.pokemanager.data.models.Type
 import com.canvas.krish.pokemanager.network.PokemonApi
+import com.google.common.cache.Cache
 import io.reactivex.Single
 import org.json.JSONArray
 import org.json.JSONException
@@ -12,14 +20,19 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.InputStream
+import java.util.*
 
 /**
  * Created by Krishna Chaitanya Kandula on 9/16/2017.
  */
-class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val context: Context) : PokemonRepository {
+class CachingPokemonRepository(private val pokemonApi: PokemonApi,
+                               private val context: Context,
+                               private val amazonS3: AmazonS3,
+                               private val cachedImageUrls: Cache<Int, String>) : PokemonRepository {
 
     companion object {
         private val INITIAL_DATA_PATH: String = "initial_data.json"
+        private val LOG_TAG: String = CachingPokemonRepository::class.simpleName!!
     }
 
     private var cachedPokemonList: MutableList<PokemonListResult> = mutableListOf()
@@ -30,22 +43,48 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
                 try {
                     val jsonArray: JSONArray? = parseInitialData(context)
                     if (jsonArray != null) {
-                        for (index in 0..jsonArray.length()) {
+                        for (index in 0 until 150) {
                             val jsonObject: JSONObject = jsonArray.getJSONObject(index)
+                            val id: Int = jsonObject.getInt("_id")
+
+                            //Check if Pokemon contains second type
+                            var type2: Type? = null
+                            if(jsonObject.has("_type2")) {
+                                type2 = Type.valueOf(jsonObject.getString("_type2").toUpperCase())
+                            }
+
+                            //Retrieve Color JsonObject
+                            val colorObject: JSONObject = jsonObject.getJSONObject("_color")
+                            val colorPalette: PokemonColorPalette = PokemonColorPalette(colorObject.getInt("_lightMuted"),
+                                    colorObject.getInt("_darkMuted"),
+                                    colorObject.getInt("_dominant"),
+                                    colorObject.getInt("_darkVibrant"),
+                                    colorObject.getInt("_lightVibrant"),
+                                    colorObject.getInt("_muted"),
+                                    colorObject.getInt("_vibrant"))
+
                             val pokemonlistResult: PokemonListResult = PokemonListResult(
-                                    jsonObject.getInt("_id"),
-                                    jsonObject.getString("_name"),
-                                    jsonObject.getString("_front_default_sprite_uri"),
-                                    jsonObject.getString("_description"))
+                                    id,
+                                    jsonObject.getString("_name").capitalize(),
+                                    jsonObject.getString("_description"),
+                                    generatePokemonImageUrl(id),
+                                    Type.valueOf(jsonObject.getString("_type1").toUpperCase()),
+                                    type2,
+                                    colorPalette)
                             cachedPokemonList.add(pokemonlistResult)
                         }
                     }
                 } catch (e: JSONException) {
+                    Log.e(LOG_TAG, e.message)
                     emitter.onError(e)
                 }
             }
 
-            if (offset < 0) emitter.onError(IndexOutOfBoundsException("Invalid offset given"))
+            if (offset < 0) {
+                val error: String = "Invalid offset given"
+                Log.e(LOG_TAG, error)
+                emitter.onError(IndexOutOfBoundsException(error))
+            }
 
             //Return empty list if offset is > number of elements
             if (offset > cachedPokemonList.size) emitter.onSuccess(listOf())
@@ -68,15 +107,53 @@ class CachingPokemonRepository(private val pokemonApi: PokemonApi, private val c
         return JSONArray(jsonData)
     }
 
-    override fun getPokemon(id: Int, onSuccess: (Pokemon) -> Unit, onError: (t: Throwable?) -> Unit) {
-        pokemonApi.getPokemon(id).enqueue(object : Callback<Pokemon> {
-            override fun onFailure(call: Call<Pokemon>?, t: Throwable?) {
-                onError(t)
-            }
+    override fun getPokemon(id: Int): Single<Pokemon> {
+        val single: Single<Pokemon> = Single.create { emitter ->
+            pokemonApi.getPokemon(id).enqueue(object : Callback<Pokemon> {
+                override fun onFailure(call: Call<Pokemon>?, t: Throwable?) {
+                    if(t != null) {
+                        Log.e(LOG_TAG, t.message, t)
+                    }
+                    emitter.onError(t)
+                }
 
-            override fun onResponse(call: Call<Pokemon>?, response: Response<Pokemon>?) {
-                onSuccess(response!!.body()!!)
-            }
-        })
+                override fun onResponse(call: Call<Pokemon>?, response: Response<Pokemon>?) {
+                    if(response?.body() != null) {
+                        val id: Int = response.body()!!.id
+                        response.body()!!.pokemonListResult = cachedPokemonList[id]
+                        emitter.onSuccess(response.body())
+                    } else {
+                        onFailure(call, Exception("Unable to find a Pokemon"))
+                    }
+                }
+            })
+        }
+
+        return single
+    }
+
+    private fun generatePokemonImageUrl(id: Int): String {
+        var cachedUrl: String? = cachedImageUrls.getIfPresent(id)
+        if(cachedUrl == null) {
+            val expirationDate: Date = Date()
+            val msec: Long = expirationDate.time + (1000 * 60 * 60)     //1 hour
+            expirationDate.time = msec
+
+            val presignedUrlRequest: GeneratePresignedUrlRequest = GeneratePresignedUrlRequest(
+                    Constants.BUCKET_NAME,
+                    "$id.png")
+                    .withMethod(HttpMethod.GET)
+                    .withExpiration(expirationDate)
+
+            cachedUrl = amazonS3.generatePresignedUrl(presignedUrlRequest).toString()
+            cachedImageUrls.put(id, cachedUrl)
+        }
+
+        return cachedUrl
+    }
+
+    override fun getPokemonListResult(id: Int): Single<PokemonListResult> = Single.create { emitter ->
+        val idIndex: Int = id - 1
+        emitter.onSuccess(cachedPokemonList[idIndex])
     }
 }

@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="navListWidth">200dp</dimen>
-    <dimen name="minPokemonItemViewHeight">96dp</dimen>
+    <dimen name="minPokemonItemViewHeight">132dp</dimen>
+    <dimen name="minPokemonImageViewDiameter">96dp</dimen>
+
+    <dimen name="defaultOutlineStrokeWidth">1dp</dimen>
+
+    <dimen name="defaultItemViewMargin">4dp</dimen>
+    <dimen name="shortTextViewMargin">4dp</dimen>
+    <dimen name="longTextPadding">8dp</dimen>
+    <dimen name="defaultTextPadding">4dp</dimen>
 </resources>
