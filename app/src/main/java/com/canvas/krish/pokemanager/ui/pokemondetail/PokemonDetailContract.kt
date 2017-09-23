@@ -13,6 +13,7 @@ interface PokemonDetailContract {
 
         fun showPokemonListResultData(listResult: PokemonListResult)
         fun getExistingPokemonListResultData(): PokemonListResult?
+
     }
 
     interface Presenter : BaseLcPresenter {

@@ -18,22 +18,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout_pokemonDetailActivity"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout_pokemonDetailActivity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/defaultItemViewMargin"
+        app:layout_constraintBottom_toTopOf="@+id/viewPager_pokemonDetailActivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/itemview_pokemonDetailActivity"/>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager_pokemonDetailActivity"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/defaultItemViewMargin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemview_pokemonDetailActivity">
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/detailCardView_pokemonDetailActivity"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </android.support.v7.widget.CardView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        app:layout_constraintTop_toBottomOf="@id/tabLayout_pokemonDetailActivity">
+    </android.support.v4.view.ViewPager>
 
 </android.support.constraint.ConstraintLayout>

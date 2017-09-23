@@ -28,6 +28,8 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
     private var data: Pokemon? = null
     private var listResultData: PokemonListResult? = null
 
+    private val viewPagerAdapter: PokemonDetailViewPagerAdapter by lazy { PokemonDetailViewPagerAdapter(supportFragmentManager) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pokemon_detail)
@@ -39,6 +41,8 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
                 .pokemonDetailModule(PokemonDetailModule(this, pokemonId))
                 .build()
                 .inject(this)
+
+        setupViewPager()
     }
 
     override fun onResume() {
@@ -61,22 +65,28 @@ class PokemonDetailActivity : AppCompatActivity(), PokemonDetailContract.View {
         }
     }
 
+    private fun setupViewPager() {
+        viewPager_pokemonDetailActivity.adapter = viewPagerAdapter
+        tabLayout_pokemonDetailActivity.setupWithViewPager(viewPager_pokemonDetailActivity)
+    }
+
     override fun showLoading() {
-        //Not implemented
+//        swipeRefreshLayout_pokemonDetailActivity.isRefreshing = true
     }
 
     override fun stopLoading() {
-        //Not implemented
+//        swipeRefreshLayout_pokemonDetailActivity.isRefreshing = false
     }
 
     override fun setData(data: Pokemon) {
         this.data = data
-
+        viewPagerAdapter.setDetailFragmentData(data, listResultData!!)
     }
 
     override fun showPokemonListResultData(pokemonListResult: PokemonListResult) {
+        listResultData = pokemonListResult
         pokemonIdTextView_PokemonListItemView.text = "${pokemonListResult.id}"
-        val viewHolder: PokemonListViewHolder = PokemonListViewHolder(layout_PokemonListActivity, this, {})
+        val viewHolder = PokemonListViewHolder(layout_PokemonListActivity, this, {})
         viewHolder.onBind(pokemonListResult, itemview_pokemonDetailActivity as CardView)
     }
 

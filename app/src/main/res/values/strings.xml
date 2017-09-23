@@ -6,4 +6,7 @@
     <string name="drawer_item_teams">My Teams</string>
     <string name="drawer_item_favorites">Favorites</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank LOG_TAG</string>
+
 </resources>

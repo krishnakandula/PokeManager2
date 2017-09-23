@@ -56,7 +56,6 @@ class PokemonDetailPresenter @Inject constructor(private val view: PokemonDetail
     }
 
     override fun getPokemonListResultData() {
-        view.showLoading()
         pokemonRepository.getPokemonListResult(pokemonId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

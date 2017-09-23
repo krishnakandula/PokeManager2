@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardview_PokemonListItemView"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/defaultItemViewMargin"
-    android:background="@color/cardview_dark_background"
-    android:elevation="@dimen/cardview_default_elevation"
-    app:cardCornerRadius="@dimen/cardview_default_radius">
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    xmlns:tools="http://schemas.android.com/tools"
+                                    android:id="@+id/cardview_PokemonListItemView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/defaultItemViewMargin"
+                                    android:background="@color/cardview_dark_background"
+                                    android:clickable="true"
+                                    android:elevation="@dimen/cardview_default_elevation"
+                                    android:foreground="?android:attr/selectableItemBackground"
+                                    app:cardCornerRadius="@dimen/cardview_default_radius">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,7 +26,7 @@
             android:textAppearance="@android:style/TextAppearance.Material.SearchResult.Subtitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="#X" />
+            tools:text="#X"/>
 
         <TextView
             android:id="@+id/pokemonNameTextView_pokemonListItemView"
@@ -36,7 +38,7 @@
             android:textAppearance="@android:style/TextAppearance.Material.SearchResult.Title"
             app:layout_constraintStart_toEndOf="@id/pokemonIdTextView_PokemonListItemView"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Pokemon name" />
+            tools:text="Pokemon name"/>
 
         <android.support.v7.widget.CardView
             android:id="@+id/pokemonType1CardView_pokemonListItemView"
@@ -55,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/defaultItemViewMargin"
-                tools:text="Type 1" />
+                tools:text="Type 1"/>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
@@ -76,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/defaultItemViewMargin"
                 android:background="@drawable/rectangle_outline"
-                tools:text="Type 2" />
+                tools:text="Type 2"/>
         </android.support.v7.widget.CardView>
 
 
@@ -93,7 +95,7 @@
             app:layout_constraintEnd_toStartOf="@id/pokemonImageView_pokemonListItemView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/pokemonType1CardView_pokemonListItemView"
-            tools:text="Description" />
+            tools:text="Description"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/pokemonImageView_pokemonListItemView"
@@ -106,6 +108,6 @@
             app:civ_border_width="@dimen/defaultOutlineStrokeWidth"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
